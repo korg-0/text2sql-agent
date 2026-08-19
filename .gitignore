@@ -1,0 +1,6 @@
+spider_databases/
+*.sqlite
+*.zip
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
