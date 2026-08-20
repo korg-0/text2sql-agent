@@ -1,0 +1,21 @@
+{
+  "baseline_run": {
+    "description": "Initial pipeline, before LIKE-wildcard prompt fix",
+    "total_examples": 50,
+    "correct": 41,
+    "accuracy": 0.82
+  },
+  "after_prompt_fix": {
+    "description": "After adding exact-match instruction to generation prompt (avoids unnecessary LIKE wildcards)",
+    "total_examples": 44,
+    "note": "6 of 50 excluded due to Groq free-tier rate limit errors (429), not model failures",
+    "correct": 40,
+    "accuracy": 0.909
+  },
+  "methodology": "Execution accuracy: generated SQL's result set compared against gold SQL's result set (order-independent row comparison). Evaluated on Spider validation split questions matched to 20 available SQLite databases.",
+  "known_failure_patterns": [
+    "Semantic ambiguity in aggregation edge cases (e.g. INNER vs LEFT JOIN interpretation of 'least X')",
+    "Set operation equivalents (EXCEPT vs NOT EXISTS) producing correct but differently-shaped results in rare cases",
+    "Complex multi-column SELECT with duplicate-column gold queries (tie-breaking behavior)"
+  ]
+}
