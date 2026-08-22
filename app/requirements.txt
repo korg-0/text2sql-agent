@@ -1,0 +1,7 @@
+gradio
+groq
+sentence-transformers
+pandas
+numpy
+
+spaces
