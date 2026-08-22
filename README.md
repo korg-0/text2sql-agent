@@ -34,15 +34,15 @@ Evaluated on a sample of the Spider benchmark validation set (execution accuracy
 - The agent does not currently verify a question is answerable from the selected database's schema before attempting generation — mismatched database/question pairs can produce degenerate output
 
 ## Architecture
-├── app/
-│ ├── app.py # Gradio interface
-│ └── requirements.txt
-├── src/
-│ ├── schema_linking.py # schema extraction + embedding-based retrieval
-│ └── sql_generation.py # difficulty classification, generation, self-correction
-├── evaluation/
-│ └── eval_results.json # benchmark results
-└── spider_databases/ # SQLite databases (Spider validation split, 20 DBs)
+├── app/                                                                                                                                                           
+│ ├── app.py # Gradio interface                                                                                                                                    
+│ └── requirements.txt                                                                                                                                             
+├── src/                                                                                                                                                           
+│ ├── schema_linking.py # schema extraction + embedding-based retrieval                                                                                            
+│ └── sql_generation.py # difficulty classification, generation, self-correction                                                                                   
+├── evaluation/                                                                                                                                                    
+│ └── eval_results.json # benchmark results                                                                                                                        
+└── spider_databases/ # SQLite databases (Spider validation split, 20 DBs)                                                                                         
 
 ## Tech Stack
 
