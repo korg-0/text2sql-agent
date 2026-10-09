@@ -76,9 +76,21 @@ Fine-tuned **Qwen2.5-Coder-3B-Instruct** with QLoRA (4-bit NF4 base, LoRA r=16 o
 |---|---|---|
 | Qwen2.5-Coder-3B, no fine-tuning | 62.0% | 84.0% |
 | **Qwen2.5-Coder-3B + QLoRA (this work)** | **76.0%** | **94.0%** |
+| Qwen2.5-Coder-3B + QLoRA + execution-feedback retries (up to 3) | 78.0% | 96.0% |
 | Groq `gpt-oss-120b` pipeline (schema linking + difficulty classification + self-correction), all 50 counted | 80-82% | n/a |
 
 Notes on interpretation:
 - The local models are evaluated single-shot with greedy decoding, using the full schema (no sample rows) and no self-correction loop, matching the training format. The Groq pipeline uses linked schema, sample rows, and up to 3 retries, so it is not a like-for-like comparison.
 - The Groq accuracy figures reported earlier (87-91%) excluded questions that hit free-tier rate limits; counting all 50 questions gives 80-82%, shown above.
 - The evaluation sample is small (50 questions, roughly +/-6 points of noise); results are indicative, not definitive.
+
+
+### Phase 2 findings
+
+- **Fine-tuning helped:** execution accuracy rose from 62% to 76% and the valid-SQL rate from 84% to 94% on the same 50 questions. Paired by question, fine-tuning fixed 9 and broke 2 (sign test p = 0.065), so the gain is suggestive rather than statistically conclusive at this sample size.
+- **Where the gain came from:** questions whose gold SQL is a flat query went from 26/38 to 32/38; questions whose gold SQL needs a set operation or subquery went from 5/12 to 6/12.
+- **Nested queries are the weak spot:** the fine-tuned model used a set operation or subquery on 10 of those 12 questions but got only 6 right. In 4 of its 6 misses it chose the right kind of construct with wrong details (wrong branch condition, extra join, invented column); in the other 2 it used a plain join instead.
+- **Join over-use did not increase:** predictions with more joins than the gold query dropped from 11 (base) to 7 (fine-tuned).
+- **Hallucinated schema elements:** the three queries that failed to execute in the single-shot run each referenced a column that does not exist (for example an invented `pet_type` column).
+- **Execution-feedback retries** fixed 1 of those 3 queries; the other 2 still failed after 3 attempts, so retries help only modestly against hallucinated columns.
+- **Caveats:** scoring is strict (result rows must match, including column order), which slightly understates accuracy; the sample is 50 questions, so differences of a few points are within noise.
