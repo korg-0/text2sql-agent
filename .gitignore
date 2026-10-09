@@ -4,3 +4,5 @@ spider_databases/
 __pycache__/
 .ipynb_checkpoints/
 *.pyc
+qlora_checkpoints*/
+qlora_adapter_final/

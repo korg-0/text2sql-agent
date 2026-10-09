@@ -65,3 +65,20 @@ python app/app.py
 - Pourreza, M., & Rafiei, D. (2023). [DIN-SQL: Decomposed In-Context Learning of Text-to-SQL with Self-Correction](https://arxiv.org/abs/2304.11015)
 - Gao, D. et al. (2023). [Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation](https://arxiv.org/abs/2308.15363) (DAIL-SQL)
 - Yu, T. et al. (2018). [Spider: A Large-Scale Human-Labeled Dataset for Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task](https://arxiv.org/abs/1809.08887)
+
+## Phase 2: QLoRA Fine-Tuning
+
+Fine-tuned **Qwen2.5-Coder-3B-Instruct** with QLoRA (4-bit NF4 base, LoRA r=16 on all attention and MLP projections, ~0.96% of weights trainable) on a 2,000-example subset of Spider's train split for 2 epochs (~2 hours on a free Colab T4).
+
+- **LoRA adapter:** [korg-0/qwen2.5-coder-3b-spider-lora](https://huggingface.co/korg-0/qwen2.5-coder-3b-spider-lora)
+
+| Model (same 50 Spider validation questions) | Execution accuracy | Valid-SQL rate |
+|---|---|---|
+| Qwen2.5-Coder-3B, no fine-tuning | 62.0% | 84.0% |
+| **Qwen2.5-Coder-3B + QLoRA (this work)** | **76.0%** | **94.0%** |
+| Groq `gpt-oss-120b` pipeline (schema linking + difficulty classification + self-correction), all 50 counted | 80-82% | n/a |
+
+Notes on interpretation:
+- The local models are evaluated single-shot with greedy decoding, using the full schema (no sample rows) and no self-correction loop, matching the training format. The Groq pipeline uses linked schema, sample rows, and up to 3 retries, so it is not a like-for-like comparison.
+- The Groq accuracy figures reported earlier (87-91%) excluded questions that hit free-tier rate limits; counting all 50 questions gives 80-82%, shown above.
+- The evaluation sample is small (50 questions, roughly +/-6 points of noise); results are indicative, not definitive.
