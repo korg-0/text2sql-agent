@@ -1,0 +1,452 @@
+[
+  {
+    "question": "Give the code of the airport with the least flights.",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT T1.AirportCode FROM AIRPORTS AS T1 JOIN FLIGHTS AS T2 ON T1.AirportCode  =  T2.DestAirport OR T1.AirportCode  =  T2.SourceAirport GROUP BY T1.AirportCode ORDER BY count(*) LIMIT 1",
+    "pred_sql": "SELECT T1.AirportCode FROM airports AS T1 JOIN flights AS T2 ON T1.AirportCode  =  T2.SourceAirport GROUP BY T1.AirportCode ORDER BY count(*) LIMIT 1",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Find number of pets owned by students who are older than 20.",
+    "db_id": "pets_1",
+    "gold_sql": "SELECT count(*) FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid WHERE T1.age  >  20",
+    "pred_sql": "SELECT count(*) FROM student AS T1 JOIN has_pet AS T2 ON T1.StuID  =  T2.StuID WHERE T1.Age  >  20",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "On average, when were the transcripts printed?",
+    "db_id": "student_transcripts_tracking",
+    "gold_sql": "SELECT avg(transcript_date) FROM Transcripts",
+    "pred_sql": "SELECT avg(transcript_date) FROM TRANSCRIPTS",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are the distinct battle names which are between bulgarian commander 'Kaloyan' and latin commander 'Baldwin I'?",
+    "db_id": "battle_death",
+    "gold_sql": "SELECT name FROM battle WHERE bulgarian_commander  =  'Kaloyan' AND latin_commander  =  'Baldwin I'",
+    "pred_sql": "SELECT DISTINCT T1.name FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T1.bulgarian_commander  =  'Kaloyan' AND T1.latin_commander  =  'Baldwin I'",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "List the first and last name of all players who are left / L hand in the order of birth date.",
+    "db_id": "wta_1",
+    "gold_sql": "SELECT first_name ,  last_name FROM players WHERE hand  =  'L' ORDER BY birth_date",
+    "pred_sql": "SELECT first_name ,  last_name FROM players WHERE hand  =  \"L\" ORDER BY birth_date",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Find the name of the shops that do not hire any employee.",
+    "db_id": "employee_hire_evaluation",
+    "gold_sql": "SELECT name FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM hiring)",
+    "pred_sql": "SELECT name FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM hiring)",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many flights arriving in Aberdeen city?",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.City  =  \"Aberdeen\"",
+    "pred_sql": "SELECT count(*) FROM airports AS T1 JOIN flights AS T2 ON T1.airportcode  =  T2.destairport WHERE T1.city  =  \"Aberdeen\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are the ids and names of all countries that either have more than 3 car makers or produce fiat model ?",
+    "db_id": "car_1",
+    "gold_sql": "select t1.countryid ,  t1.countryname from countries as t1 join car_makers as t2 on t1.countryid  =  t2.country group by t1.countryid having count(*)  >  3 union select t1.countryid ,  t1.countryname from countries as t1 join car_makers as t2 on t1.countryid  =  t2.country join model_list as t3 on t2.id  =  t3.maker where t3.model  =  'fiat';",
+    "pred_sql": "SELECT T1.CountryName FROM countries AS T1 JOIN car_makers AS T2 ON T1.CountryId  =  T2.Country WHERE T2.Maker  =  \"Fiat\" UNION SELECT T1.CountryName FROM countries AS T1 JOIN car_makers AS T2 ON T1.CountryId  =  T2.Country JOIN model_list AS T3 ON T2.Id  =  T3.Maker WHERE T3.Model  =  \"Fiat\"",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "Show the names and grades of each high schooler.",
+    "db_id": "network_1",
+    "gold_sql": "SELECT name ,  grade FROM Highschooler",
+    "pred_sql": "SELECT name ,  grade FROM Highschooler",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Find the first name and age of students who have a dog but do not have a cat as a pet.",
+    "db_id": "pets_1",
+    "gold_sql": "SELECT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pettype  =  'dog' AND T1.stuid NOT IN (SELECT T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pettype  =  'cat')",
+    "pred_sql": "SELECT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.StuID  =  T2.StuID JOIN pets AS T3 ON T2.PetID  =  T3.PetID WHERE T3.pettype  =  \"dog\" EXCEPT SELECT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.StuID  =  T2.StuID JOIN pets AS T3 ON T2.PetID  =  T3.PetID WHERE T3.pettype  =  \"cat\"",
+    "retries": 1,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Find the major and age of students who do not have a cat pet.",
+    "db_id": "pets_1",
+    "gold_sql": "SELECT major ,  age FROM student WHERE stuid NOT IN (SELECT T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pettype  =  'cat')",
+    "pred_sql": "SELECT T1.major ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.StuID  =  T2.StuID JOIN pets AS T3 ON T2.petID  =  T3.petID WHERE T3.pettype != \"cat\"",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "How many flights do we have?",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT count(*) FROM FLIGHTS",
+    "pred_sql": "SELECT count(*) FROM flights",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "List the names of all winners who played in both 2013 and 2016.",
+    "db_id": "wta_1",
+    "gold_sql": "SELECT winner_name FROM matches WHERE YEAR  =  2013 INTERSECT SELECT winner_name FROM matches WHERE YEAR  =  2016",
+    "pred_sql": "SELECT T1.winner_name FROM matches AS T1 JOIN players AS T2 ON T1.winner_id  =  T2.player_id WHERE T1.year  =  2013 INTERSECT SELECT T1.winner_name FROM matches AS T1 JOIN players AS T2 ON T1.winner_id  =  T2.player_id WHERE T1.year  =  2016",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What is the code of the country with the most players?",
+    "db_id": "wta_1",
+    "gold_sql": "SELECT country_code FROM players GROUP BY country_code ORDER BY count(*) DESC LIMIT 1",
+    "pred_sql": "SELECT country_code FROM players GROUP BY country_code ORDER BY count(*) DESC LIMIT 1",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many dog pets are raised by female students?",
+    "db_id": "pets_1",
+    "gold_sql": "SELECT count(*) FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T2.petid  =  T3.petid WHERE T1.sex  =  'F' AND T3.pettype  =  'dog'",
+    "pred_sql": "SELECT count(*) FROM pets AS T1 JOIN has_pet AS T2 ON T1.petid  =  T2.petid JOIN student AS T3 ON T2.stuid  =  T3.stuid WHERE T1.pettype  =  \"dog\" AND T3.sex  =  \"F\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Show names of teachers that teach at least two courses.",
+    "db_id": "course_teach",
+    "gold_sql": "SELECT T2.Name FROM course_arrange AS T1 JOIN teacher AS T2 ON T1.Teacher_ID  =  T2.Teacher_ID GROUP BY T2.Name HAVING COUNT(*)  >=  2",
+    "pred_sql": "SELECT T1.Name FROM teacher AS T1 JOIN course_arrange AS T2 ON T1.Teacher_ID  =  T2.Teacher_ID GROUP BY T1.Teacher_ID HAVING count(*)  >=  2",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Count the number of orchestras that have CD or DVD as their record format.",
+    "db_id": "orchestra",
+    "gold_sql": "SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  \"CD\" OR Major_Record_Format  =  \"DVD\"",
+    "pred_sql": "SELECT count(*) FROM orchestra WHERE Major_Record_Format  =  \"CD\" OR Major_Record_Format  =  \"DVD\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are the country code and first name of the players who won in both tourney WTA Championships and Australian Open?",
+    "db_id": "wta_1",
+    "gold_sql": "SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'WTA Championships' INTERSECT SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'Australian Open'",
+    "pred_sql": "SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'WTA Championships' INTERSECT SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'Australian Open'",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Find the states where both owners and professionals live.",
+    "db_id": "dog_kennels",
+    "gold_sql": "SELECT state FROM Owners INTERSECT SELECT state FROM Professionals",
+    "pred_sql": "SELECT T1.state FROM Owners AS T1 JOIN Professionals AS T2 ON T1.owner_id  =  T2.professional_id GROUP BY T1.state",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "What is the last transcript release date?",
+    "db_id": "student_transcripts_tracking",
+    "gold_sql": "SELECT transcript_date FROM Transcripts ORDER BY transcript_date DESC LIMIT 1",
+    "pred_sql": "SELECT max(transcript_date) FROM transcripts",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are all the song names by singers who are older than average?",
+    "db_id": "concert_singer",
+    "gold_sql": "SELECT song_name FROM singer WHERE age  >  (SELECT avg(age) FROM singer)",
+    "pred_sql": "SELECT T1.Song_Name FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID  =  T2.Singer_ID WHERE T1.Age  >  (SELECT avg(T3.Age) FROM singer AS T3)",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "Count the number of templates of the type CV.",
+    "db_id": "cre_Doc_Template_Mgt",
+    "gold_sql": "SELECT count(*) FROM Templates WHERE template_type_code  =  \"CV\"",
+    "pred_sql": "SELECT count(*) FROM Templates WHERE template_type_code  =  \"CV\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are the names and grades for each high schooler?",
+    "db_id": "network_1",
+    "gold_sql": "SELECT name ,  grade FROM Highschooler",
+    "pred_sql": "SELECT name ,  grade FROM Highschooler",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are the number of votes from state 'NY' or 'CA'?",
+    "db_id": "voter_1",
+    "gold_sql": "SELECT count(*) FROM votes WHERE state  =  'NY' OR state  =  'CA'",
+    "pred_sql": "SELECT count(*) FROM VOTES WHERE state  =  'NY' OR state  =  'CA'",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Count the number of templates.",
+    "db_id": "cre_Doc_Template_Mgt",
+    "gold_sql": "SELECT count(*) FROM Templates",
+    "pred_sql": "SELECT count(*) FROM Templates",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What is the best rank of losers across all matches?",
+    "db_id": "wta_1",
+    "gold_sql": "SELECT min(loser_rank) FROM matches",
+    "pred_sql": "SELECT min(loser_rank) FROM matches",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "List the vote ids, phone numbers and states of all votes.",
+    "db_id": "voter_1",
+    "gold_sql": "SELECT vote_id ,  phone_number ,  state FROM votes",
+    "pred_sql": "SELECT vote_id ,  phone_number ,  state FROM VOTES",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many airports do we have?",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT count(*) FROM AIRPORTS",
+    "pred_sql": "SELECT count(*) FROM airports",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What are the country codes for countries that do not speak English?",
+    "db_id": "world_1",
+    "gold_sql": "SELECT CountryCode FROM countrylanguage EXCEPT SELECT CountryCode FROM countrylanguage WHERE LANGUAGE  =  \"English\"",
+    "pred_sql": "SELECT code FROM country WHERE code NOT IN (SELECT countrycode FROM countrylanguage WHERE language  =  'English')",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "Give the city and country for the Alton airport.",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT City ,  Country FROM AIRPORTS WHERE AirportName  =  \"Alton\"",
+    "pred_sql": "SELECT T1.city ,  T1.country FROM airports AS T1 JOIN flights AS T2 ON T1.airportcode  =  T2.sourceairport WHERE T1.airportname  =  \"Alton\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many different forms of governments are there in Africa?",
+    "db_id": "world_1",
+    "gold_sql": "SELECT count(DISTINCT GovernmentForm) FROM country WHERE Continent  =  \"Africa\"",
+    "pred_sql": "SELECT count(DISTINCT governmentform) FROM country WHERE continent  =  'Africa'",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many countries have a republic as their form of government?",
+    "db_id": "world_1",
+    "gold_sql": "SELECT count(*) FROM country WHERE GovernmentForm  =  \"Republic\"",
+    "pred_sql": "SELECT count(*) FROM country WHERE GovernmentForm  =  'Republic'",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Which student has enrolled for the most times in any program? List the id, first name, middle name, last name, the number of enrollments and student id.",
+    "db_id": "student_transcripts_tracking",
+    "gold_sql": "SELECT T1.student_id ,  T1.first_name ,  T1.middle_name ,  T1.last_name ,  count(*) ,  T1.student_id FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id GROUP BY T1.student_id ORDER BY count(*) DESC LIMIT 1",
+    "pred_sql": "SELECT T1.student_id ,  T1.first_name ,  T1.middle_name ,  T1.last_name ,  count(*) ,  T2.student_id FROM students AS T1 JOIN student_enrolment AS T2 ON T1.student_id  =  T2.student_id GROUP BY T2.student_id ORDER BY count(*) DESC LIMIT 1",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What is the number of continents?",
+    "db_id": "car_1",
+    "gold_sql": "SELECT count(*) FROM CONTINENTS;",
+    "pred_sql": "SELECT count(*) FROM continents",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Which owner has paid the largest amount of money in total for their dogs? Show the owner id and zip code.",
+    "db_id": "dog_kennels",
+    "gold_sql": "SELECT T1.owner_id ,  T1.zip_code FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id JOIN Treatments AS T3 ON T2.dog_id  =  T3.dog_id GROUP BY T1.owner_id ORDER BY sum(T3.cost_of_treatment) DESC LIMIT 1",
+    "pred_sql": "SELECT T1.owner_id ,  T1.zip_code FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id JOIN Charges AS T3 ON T2.dog_id  =  T3.charge_id WHERE T3.charge_type  =  \"Treatment\" GROUP BY T1.owner_id ORDER BY sum(T3.charge_amount) DESC LIMIT 1",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "Find the number of flights landing in the city of Aberdeen or Abilene.",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  \"Aberdeen\" OR T2.city  =  \"Abilene\"",
+    "pred_sql": "SELECT count(*) FROM airports AS T1 JOIN flights AS T2 ON T1.airportcode  =  T2.destairport WHERE T1.city  =  \"Aberdeen\" OR T1.city  =  \"Abilene\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Which African countries have a smaller population than that of any country in Asia?",
+    "db_id": "world_1",
+    "gold_sql": "SELECT Name FROM country WHERE Continent  =  \"Africa\"  AND population  <  (SELECT min(population) FROM country WHERE Continent  =  \"Asia\")",
+    "pred_sql": "SELECT name FROM country WHERE continent  =  'Africa' AND population  <  (SELECT min(population) FROM country WHERE continent  =  'Asia')",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many countries has more than 2 car makers ?",
+    "db_id": "car_1",
+    "gold_sql": "select count(*) from countries as t1 join car_makers as t2 on t1.countryid  =  t2.country group by t1.countryid having count(*)  >  2",
+    "pred_sql": "SELECT count(*) FROM car_makers GROUP BY country HAVING count(*)  >  2",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What is the content of the series Sky Radio?",
+    "db_id": "tvshow",
+    "gold_sql": "SELECT Content FROM TV_Channel WHERE series_name = \"Sky Radio\";",
+    "pred_sql": "SELECT CONTENT FROM TV_CHANNEL WHERE series_name  =  \"Sky Radio\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What is name of the country that speaks the largest number of languages?",
+    "db_id": "world_1",
+    "gold_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode GROUP BY T1.Name ORDER BY COUNT(*) DESC LIMIT 1",
+    "pred_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode GROUP BY T2.CountryCode ORDER BY count(*) DESC LIMIT 1",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "Show different hometown of teachers and the number of teachers from each hometown.",
+    "db_id": "course_teach",
+    "gold_sql": "SELECT Hometown ,  COUNT(*) FROM teacher GROUP BY Hometown",
+    "pred_sql": "SELECT count(*) ,  Hometown FROM teacher GROUP BY Hometown",
+    "retries": 0,
+    "executes": true,
+    "correct": false
+  },
+  {
+    "question": "What model has the most different versions?",
+    "db_id": "car_1",
+    "gold_sql": "SELECT Model FROM CAR_NAMES GROUP BY Model ORDER BY count(*) DESC LIMIT 1;",
+    "pred_sql": "SELECT T1.Model FROM model_list AS T1 JOIN cars_data AS T2 ON T1.Model  =  T2.Model GROUP BY T1.Model ORDER BY count(*) DESC LIMIT 1",
+    "retries": 3,
+    "executes": false,
+    "correct": false
+  },
+  {
+    "question": "How many models does each car maker produce? List maker full name, id and the number.",
+    "db_id": "car_1",
+    "gold_sql": "SELECT T1.FullName ,  T1.Id ,  count(*) FROM CAR_MAKERS AS T1 JOIN MODEL_LIST AS T2 ON T1.Id  =  T2.Maker GROUP BY T1.Id;",
+    "pred_sql": "SELECT T1.FullName ,  T1.Id ,  count(*) FROM car_makers AS T1 JOIN model_list AS T2 ON T1.Id  =  T2.Maker GROUP BY T1.Id",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "What is the name of the winner with the most rank points who participated in the Australian Open tournament?",
+    "db_id": "wta_1",
+    "gold_sql": "SELECT winner_name FROM matches WHERE tourney_name  =  'Australian Open' ORDER BY winner_rank_points DESC LIMIT 1",
+    "pred_sql": "SELECT T1.winner_name FROM matches AS T1 JOIN players AS T2 ON T1.winner_id  =  T2.player_id WHERE T1.tour_name  =  \"Australian Open\" ORDER BY T2.ranking_points DESC LIMIT 1",
+    "retries": 3,
+    "executes": false,
+    "correct": false
+  },
+  {
+    "question": "What is the name and directors of all the cartoons that are ordered by air date?",
+    "db_id": "tvshow",
+    "gold_sql": "SELECT title ,  Directed_by FROM Cartoon ORDER BY Original_air_date",
+    "pred_sql": "SELECT title ,  directed_by FROM cartoon ORDER BY original_air_date",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "How many cars has over 6 cylinders?",
+    "db_id": "car_1",
+    "gold_sql": "SELECT COUNT(*) FROM CARS_DATA WHERE Cylinders  >  6;",
+    "pred_sql": "SELECT count(*) FROM cars_data WHERE cylinders  >  6",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Count the number of flights into ATO.",
+    "db_id": "flight_2",
+    "gold_sql": "SELECT count(*) FROM FLIGHTS WHERE DestAirport  =  \"ATO\"",
+    "pred_sql": "SELECT count(*) FROM flights WHERE destairport  =  \"ATO\"",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Which professional did not operate any treatment on dogs? List the professional's id, role and email.",
+    "db_id": "dog_kennels",
+    "gold_sql": "SELECT professional_id ,  role_code ,  email_address FROM Professionals EXCEPT SELECT T1.professional_id ,  T1.role_code ,  T1.email_address FROM Professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id",
+    "pred_sql": "SELECT professional_id ,  role_code ,  email_address FROM professionals WHERE professional_id NOT IN (SELECT professional_id FROM treatments)",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Give the names of nations that speak both English and French.",
+    "db_id": "world_1",
+    "gold_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"English\" INTERSECT SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"French\"",
+    "pred_sql": "SELECT T1.name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.code  =  T2.countrycode WHERE T2.language  =  'English' INTERSECT SELECT T1.name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.code  =  T2.countrycode WHERE T2.language  =  'French'",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  },
+  {
+    "question": "Show all template type codes with less than three templates.",
+    "db_id": "cre_Doc_Template_Mgt",
+    "gold_sql": "SELECT template_type_code FROM Templates GROUP BY template_type_code HAVING count(*)  <  3",
+    "pred_sql": "SELECT template_type_code FROM templates GROUP BY template_type_code HAVING count(*)  <  3",
+    "retries": 0,
+    "executes": true,
+    "correct": true
+  }
+]
