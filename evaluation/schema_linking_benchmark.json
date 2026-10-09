@@ -1,0 +1,180 @@
+{
+  "n_questions": 300,
+  "rows": [
+    {
+      "config": "full schema (no linking)",
+      "avg_tables": 5.533333333333333,
+      "schema_fraction": 1.0,
+      "all_gold_tables_found": 1.0,
+      "column_recall": 1.0
+    },
+    {
+      "config": "v1 table-level, k=2",
+      "avg_tables": 2.0,
+      "schema_fraction": 0.5220617438117443,
+      "all_gold_tables_found": 0.79,
+      "column_recall": 0.8422222222222222
+    },
+    {
+      "config": "v1 table-level, k=3",
+      "avg_tables": 2.8466666666666667,
+      "schema_fraction": 0.706425949050948,
+      "all_gold_tables_found": 0.92,
+      "column_recall": 0.9355555555555556
+    },
+    {
+      "config": "v1 table-level, k=4",
+      "avg_tables": 3.4266666666666667,
+      "schema_fraction": 0.8019012654012667,
+      "all_gold_tables_found": 0.95,
+      "column_recall": 0.96
+    },
+    {
+      "config": "v2 embeddings only, k=3",
+      "avg_tables": 3.01,
+      "schema_fraction": 0.7472592823842816,
+      "all_gold_tables_found": 0.9466666666666667,
+      "column_recall": 0.96
+    },
+    {
+      "config": "v2 + values, k=3",
+      "avg_tables": 3.01,
+      "schema_fraction": 0.7472592823842816,
+      "all_gold_tables_found": 0.9466666666666667,
+      "column_recall": 0.9588888888888889
+    },
+    {
+      "config": "v2 + values + bridge, k=3",
+      "avg_tables": 3.1966666666666668,
+      "schema_fraction": 0.773898707773708,
+      "all_gold_tables_found": 0.9733333333333334,
+      "column_recall": 0.9766666666666667
+    },
+    {
+      "config": "v2 + values + bridge, k=4",
+      "avg_tables": 3.65,
+      "schema_fraction": 0.8276790755540759,
+      "all_gold_tables_found": 0.9866666666666667,
+      "column_recall": 0.9855555555555555
+    }
+  ],
+  "misses": [
+    {
+      "question": "Find the order dates of the orders with price above 1000.",
+      "db": "cre_Drama_Workshop_Groups",
+      "gold_tables": [
+        "Customer_Orders",
+        "Order_Items",
+        "Products"
+      ],
+      "selected": [
+        "Customer_Orders",
+        "Bookings",
+        "Order_Items",
+        "Invoices",
+        "Bookings_Services"
+      ]
+    },
+    {
+      "question": "How many musicians play in the song \"Flash\"?",
+      "db": "music_2",
+      "gold_tables": [
+        "Band",
+        "Performance",
+        "Songs"
+      ],
+      "selected": [
+        "Performance",
+        "Instruments",
+        "Vocals",
+        "Songs"
+      ]
+    },
+    {
+      "question": "What is the name of the medication used for the patient staying in room 111?",
+      "db": "hospital_1",
+      "gold_tables": [
+        "Medication",
+        "Patient",
+        "Prescribes",
+        "Room",
+        "Stay"
+      ],
+      "selected": [
+        "Medication",
+        "Prescribes",
+        "Stay",
+        "Patient"
+      ]
+    },
+    {
+      "question": "Count the total number of games the team Boston Red Stockings attended from 1990 to 2000.",
+      "db": "baseball_1",
+      "gold_tables": [
+        "home_game",
+        "team"
+      ],
+      "selected": [
+        "team",
+        "team_franchise",
+        "player",
+        "appearances"
+      ]
+    },
+    {
+      "question": "What are the product ids for the problems reported by Christop Berge with closure authorised by Ashley Medhurst?",
+      "db": "tracking_software_problems",
+      "gold_tables": [
+        "Problems",
+        "Staff"
+      ],
+      "selected": [
+        "Problem_Status_Codes",
+        "Staff",
+        "Problem_Log"
+      ]
+    },
+    {
+      "question": "Which vocal type did the musician with first name \"Solveig\" played in the song with title \"A Bar in Amsterdam\"?",
+      "db": "music_2",
+      "gold_tables": [
+        "Band",
+        "Songs",
+        "Vocals"
+      ],
+      "selected": [
+        "Vocals",
+        "Instruments",
+        "Songs"
+      ]
+    },
+    {
+      "question": "Find all the songs produced by artists with first name \"Marianne\".",
+      "db": "music_2",
+      "gold_tables": [
+        "Band",
+        "Performance",
+        "Songs"
+      ],
+      "selected": [
+        "Songs",
+        "Instruments",
+        "Vocals"
+      ]
+    },
+    {
+      "question": "Find all the stage positions of the musicians with first name \"Solveig\"",
+      "db": "music_2",
+      "gold_tables": [
+        "Band",
+        "Performance"
+      ],
+      "selected": [
+        "Instruments",
+        "Vocals",
+        "Performance",
+        "Songs"
+      ]
+    }
+  ]
+}
