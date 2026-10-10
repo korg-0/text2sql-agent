@@ -132,7 +132,7 @@ class SchemaIndex:
                 return path
             if len(path) - 1 >= max_edges:
                 continue
-            for nb in self.graph[path[-1]]:
+            for nb in sorted(self.graph[path[-1]]):      # sorted: deterministic across runs
                 if nb not in seen:
                     seen.add(nb)
                     q.append(path + [nb])
@@ -165,7 +165,7 @@ class SchemaIndex:
         for m in matches:
             matched_cols[m["table"]].add(m["column"])
         for t, cols in matched_cols.items():
-            scores[self.table_names.index(t)] += min(0.6, value_bonus * len(cols))
+            scores[self.table_names.index(t)] += min(2 * value_bonus, value_bonus * len(cols))
 
         order = [self.table_names[i] for i in np.argsort(-scores)]
         selected = order if len(order) <= full_threshold else order[:top_k]
@@ -193,9 +193,12 @@ class SchemaIndex:
 
     # ------------------------------------------------------------ rendering
     def schema_text(self, tables, keep, matches=(), include_samples=False):
+        wanted = set(tables)
+        tables = [t for t in self.table_names if t in wanted]   # canonical order: same as in the database
         blocks = []
         for t in tables:
-            info, kept = self.tables[t], set(keep[t])
+            info = self.tables[t]
+            kept = set(keep.get(t) or [c["name"] for c in info["columns"]])   # no columns given -> show all
             lines = []
             for c in info["columns"]:
                 if c["name"] in kept:
@@ -205,7 +208,7 @@ class SchemaIndex:
             if len(pks) > 1 and all(p in kept for p in pks):
                 lines.append(f"  PRIMARY KEY ({', '.join(pks)})")
             for fk in info["fks"]:
-                if fk["from"] in kept and fk["to_table"] in tables:
+                if fk["from"] in kept and fk["to_table"] in wanted:
                     lines.append(f"  FOREIGN KEY ({fk['from']}) REFERENCES {fk['to_table']}({fk['to_col']})")
             block = f"CREATE TABLE {t} (\n" + ",\n".join(lines) + "\n);"
             if include_samples and info["sample_rows"]:
