@@ -204,7 +204,8 @@ def run_system(name, system_fn, examples, db_path_fn, out_path, verbose=True):
                 {"legacy": False, "multiset": False, "ordered": False}
             rec = {"id": ex["id"], "db_id": ex["db_id"], "question": ex["question"], "gold_sql": ex["query"],
                    "hardness": approx_hardness(ex["query"]), "pred_sql": pred_sql, "executes": pred_ok,
-                   "gold_executes": gold_ok, "error": err or (None if pred_ok else str(pred_rows)),
+                   "gold_executes": gold_ok, "gold_empty": bool(gold_ok and len(gold_rows) == 0),
+                   "error": err or (None if pred_ok else str(pred_rows)),
                    "extra": {k: v for k, v in out.items() if k != "pred_sql"},
                    "seconds": round(time.time() - t0, 2), **sc}
             f.write(json.dumps(rec) + "\n")
@@ -226,6 +227,10 @@ def summarize(results, label=""):
     print(f"{label}: {k}/{n} = {k / n:.1%} (95% CI {lo:.1%}-{hi:.1%}) | valid-SQL {valid / n:.1%}")
     print("   other scorers: multiset {:.1%} | ordered {:.1%}".format(
         sum(r["multiset"] for r in results) / n, sum(r["ordered"] for r in results) / n))
+    ne = [r for r in results if r.get("gold_empty") is False]
+    if ne:
+        print(f"   non-empty gold results only: {sum(r['legacy'] for r in ne)}/{len(ne)} = "
+              f"{sum(r['legacy'] for r in ne) / len(ne):.1%}")
     by = {}
     for r in results:
         by.setdefault(r["hardness"], []).append(r["legacy"])
@@ -242,3 +247,26 @@ def compare(results_a, results_b, label_a="A", label_b="B", metric="legacy"):
           f"{rep['diff_ci95'][0]:+.1%} to {rep['diff_ci95'][1]:+.1%}) | {label_b} fixed {rep['b_fixed']}, "
           f"broke {rep['b_broke']}, p = {rep['p_value']:.3f}")
     return rep
+
+
+def load_results(path):
+    """Read a results JSONL written by run_system."""
+    with open(path) as f:
+        return [json.loads(line) for line in f if line.strip()]
+
+
+def markdown_table(systems):
+    """systems: {label: results_list} -> a markdown table for the README."""
+    lines = ["| System | Questions | Execution accuracy (95% CI) | Accuracy, non-empty gold results | Valid SQL |",
+             "|---|---|---|---|---|"]
+    for label, rs in systems.items():
+        n = len(rs)
+        if n == 0:
+            continue
+        k = sum(r["legacy"] for r in rs)
+        lo, hi = wilson_ci(k, n)
+        ne = [r for r in rs if r.get("gold_empty") is False]
+        ne_txt = f"{sum(r['legacy'] for r in ne) / len(ne):.1%} ({len(ne)} q)" if ne else "n/a"
+        valid = sum(r["executes"] for r in rs) / n
+        lines.append(f"| {label} | {n} | {k / n:.1%} ({lo:.1%}-{hi:.1%}) | {ne_txt} | {valid:.1%} |")
+    return "\n".join(lines)

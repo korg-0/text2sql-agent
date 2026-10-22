@@ -94,3 +94,23 @@ Notes on interpretation:
 - **Hallucinated schema elements:** the three queries that failed to execute in the single-shot run each referenced a column that does not exist (for example an invented `pet_type` column).
 - **Execution-feedback retries** fixed 1 of those 3 queries; the other 2 still failed after 3 attempts, so retries help only modestly against hallucinated columns.
 - **Caveats:** scoring is strict (result rows must match, including column order), which slightly understates accuracy; the sample is 50 questions, so differences of a few points are within noise.
+
+<!-- v2-results-start -->
+## Phase 2b: held-out evaluation and the v2 experiment
+
+Evaluation set: Spider dev questions never used for tuning, single-shot greedy decoding, execution match on the set of result rows (column order must match), 95% Wilson confidence intervals, paired comparisons on identical questions.
+
+| System | Questions | Execution accuracy (95% CI) | Accuracy, non-empty gold results | Valid SQL |
+|---|---|---|---|---|
+| Base Qwen2.5-Coder-3B, no fine-tuning (full schema) | 984 | 61.0% (57.9%-64.0%) | 60.4% (937 q) | 82.7% |
+| v1 fine-tune: 2,000 examples, full schema | 984 | 69.4% (66.5%-72.2%) | 68.5% (937 q) | 89.5% |
+| v2 fine-tune: 4,690 new examples, linked schema* | 984 | 68.2% (65.2%-71.0%) | 67.1% (937 q) | 88.8% |
+
+- base vs v1 (984 shared questions): 61.0% vs 69.4%, difference +8.4% (95% CI +5.7% to +11.2%); v1 is better.
+- base vs v2 (984 shared questions): 61.0% vs 68.2%, difference +7.2% (95% CI +4.5% to +10.1%); v2 is better.
+- v1 vs v2 (984 shared questions): 69.4% vs 68.2%, difference -1.2% (95% CI -3.4% to +0.9%); no statistically detectable difference.
+
+\*v2 trains on 4,690 additional Spider train examples using a schema-linking prompt, but linking only prunes databases with more than 8 tables (1 of the 20 dev databases), so v2 mainly tests more data and cleaner schema formatting, not linking.
+
+Limitations: Spider dev databases are small; scoring is strict; one training run per model.
+<!-- v2-results-end -->
